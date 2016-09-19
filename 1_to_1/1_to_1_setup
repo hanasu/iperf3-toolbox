@@ -1,0 +1,31 @@
+#! /bin/bash
+# Script created by pmm
+
+# This script will create an arbitrary number of iperf3 server daemons on the local host
+# Run this script on every host you plan on using
+
+
+#initialize variables
+c=16  #number of processes created (default: 16)
+A=0  #used by the -A flag to set CPU affinity
+num_cores=24  #number of physical cores
+port=5201  #base port number iperf3 servers will listen on
+
+#parse arguments
+while getopts c: opt
+do
+  case $opt in
+    c) c=$OPTARG
+  esac
+done
+
+#kill any iperf3 servers which are currently running
+killall iperf3
+
+#create iperf3 servers
+for i in `seq 1 $c`;do
+  iperf3 -s -d -A $A -p $port &
+  A=$(( $(( $A + 1 )) % $num_cores ))
+  port=$(( $port + 1 ))
+done
+

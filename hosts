@@ -1,0 +1,38 @@
+## hostname for loopback interface
+127.0.0.1       localhost
+
+## hostname for each node in setup
+10.241.228.191  blade1
+10.241.228.192  blade2
+10.241.228.193  blade3
+10.241.228.194  blade4
+10.241.228.195  blade5
+10.241.228.196  blade6
+10.241.228.197  blade7
+10.241.228.198  blade8
+10.241.228.199  blade9
+10.241.228.200  blade10
+10.241.228.201  blade11
+10.241.228.202  blade12
+10.241.228.203  blade13
+10.241.228.204  blade14
+10.241.228.205  blade15
+10.241.228.206  blade16
+
+#hostname for each of the 100G NIC ports
+100.0.0.1	qsfp1	qsfp.blade1
+100.0.0.2       qsfp2	qsfp.blade2
+100.0.0.3       qsfp3	qsfp.blade3
+100.0.0.4       qsfp4	qsfp.blade4
+100.0.0.5       qsfp5	qsfp.blade5
+100.0.0.6       qsfp6	qsfp.blade6
+100.0.0.7       qsfp7	qsfp.blade7
+100.0.0.8       qsfp8	qsfp.blade8
+100.0.0.9       qsfp9	qsfp.blade9
+100.0.0.10      qsfp10	qsfp.blade10
+100.0.0.11      qsfp11	qsfp.blade11
+100.0.0.12      qsfp12	qsfp.blade12
+100.0.0.13      qsfp13	qsfp.blade13
+100.0.0.14      qsfp14	qsfp.blade14
+100.0.0.15      qsfp15	qsfp.blade15
+100.0.0.16      qsfp16	qsfp.blade16

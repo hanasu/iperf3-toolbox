@@ -1,0 +1,48 @@
+#! /bin/bash
+# Script created by pmm
+
+# This script will set up iperf3 servers to handle traffic from the "n" remote hosts in a 1-to-n setup
+# Run these script once on the "1" node
+
+#initialize variables
+c=3  #number of processes created per connection (default: 3)
+t=60  #length of test in seconds (default: 60)
+A=0  #used by the -A flag to set CPU affinity
+n=0
+num_cores=24  #number of physical cores
+localhost=`hostname`  #local hostname
+localhost_id=`echo $localhost | grep -o -E [0-9]+`
+
+#parse arguments
+while getopts c:t:n: opt;do
+  case $opt in
+    c) c=$OPTARG
+       ;;
+    t) t=$OPTARG
+       ;;
+    n) n=$OPTARG
+       ;;
+  esac
+done
+
+#handle argument errors
+if [[ $n == 0 ]];then
+         echo "Error: Number of nodes in setup must be a positive value"
+         exit 1
+fi
+
+killall iperf3
+
+#create the iperf3 servers
+port=5201 #port these servers will listen on
+for i in `seq 1 $n`;do
+  if [[ $i != $localhost_id ]];then
+    for j in `seq 1 $c`;do
+      iperf3 -s -d -A $A -p $port &
+      A=$(( (( $A + 1 )) % $num_cores ))
+      port=$(( $port + 1 ))
+    done
+  else
+    port=$(( $port + $c ))
+  fi
+done

@@ -1,0 +1,28 @@
+#! /bin/bash
+# Script created by pmm
+
+# This script will collect the various logs created by the clinet during the iperf3_doit script into a single log
+# This script will also add up the bandwidth measured by each client stream to obtain the total bandwidth utilization on this server
+
+read -p "Enter a name for this test: " testname
+logdir=/root/Desktop/iperf3_toolbox/logs/$testname
+mkdir $logdir
+
+localhost=`hostname`
+
+echo "     Stream         Bandwidth" >> summary.log
+echo "----------------    ---------" >> summary.log
+for log in *.log;do
+  results=`cat $log | grep sender | tr -s " " | cut -d " " -f8`
+  total=0
+  for i in $results;do
+    total=`echo "$total + $i" | bc -l`
+  done
+  stream=`echo $log | cut -d "." -f1 | tr -t "_" " "`
+  if [[ $log != "summary.log" ]];then
+    echo "$stream    $total Gbit/s" >> summary.log
+  fi
+done
+
+cat summary.log
+mv *.log $logdir

@@ -1,0 +1,46 @@
+#! /bin/bash
+# Script created by pmm
+
+# This script will set up iperf3 clients to send traffic to the "n" remote hosts in a 1_to-n setup
+# Run this script on the "1" node
+# Make sure to run the n_to_1_stup script on each of the "n" nodes first
+
+#initialize variables
+c=3  #number of processes created per connection (default: 3)
+t=60  #length of test in seconds (default: 60)
+A=0  #used by the -A flag to set CPU affinity
+n=0  #total number of nodes in setup
+num_cores=24  #number of physical cores
+localhost=`hostname`  #local hostname
+localhost_id=`echo $localhost | grep -o -E [0-9]+`
+
+#parse arguments
+while getopts c:t:n: opt;do
+  case $opt in
+    c) c=$OPTARG
+       ;;
+    t) t=$OPTARG
+       ;;
+    n) n=$OPTARG
+       ;;
+  esac
+done
+
+#handle argument errors
+if [[ $n == 0 ]];then
+         echo "Error: Number of nodes in setup must be a positive value"
+         exit 1
+fi
+
+port=$(( 5201 + $(( $(( $localhost_id -1 )) * $c )) )) #calculate base port
+for i in `seq 1 $n`;do
+  if [[ $i != $localhost_id ]];then
+    remotehost=blade$i
+    for j in `seq 0 $(( $c - 1 ))`;do
+      iperf3 -c qsfp.$remotehost -A $A -Z -p $(( $port + $j )) -t $t -T $i -f g>> ${localhost}_to_$remotehost.log &
+      A=$(( (( $A + 1 )) % $num_cores ))
+    done
+  fi
+done
+wait #wait for all background clients to finish	
+

@@ -1,0 +1,45 @@
+#! /bin/bash
+# Script created by pmm
+
+# This script will set up iperf3 clients to send traffic to the "1" remote host in a 1-to-n setup
+# Run this script on each of the "n" nodes
+# Make sure to run the 1_to_n_setup script on the "1" node first
+
+#initialize variables
+c=3  #number of processes created per connection (default: 3)
+t=60  #length of test in seconds (default: 60)
+A=0  #used by the -A flag to set CPU affinity
+num_cores=24  #number of physical cores
+localhost=`hostname`
+localhost_id=`echo $localhost | grep -o -E [0-9]+`
+remotehost=""
+
+#parse arguments
+while getopts c:t:h: opt;do
+  case $opt in
+    c) c=$OPTARG
+       ;;
+    t) t=$OPTARG
+       ;;
+    h) remotehost=$OPTARG
+       ;;
+  esac
+done
+
+#handle argument errors
+if [[ $remotehost == "" ]];then
+  echo "Error: Did not specify remote hostname"
+  exit 1
+fi
+
+#create the iperf3 clients
+port=$(( 5201 + $(( (( $localhost_id - 1 )) * $c )) )) #port these clients will send to
+for i in `seq 1 $c`;do
+  iperf3 -c qsfp.$remotehost -A $A -Z -p $port -t $t -T $i -f g >> ${localhost}_to_${remotehost}.log &
+  A=$(( (( $A + 1 )) % $num_cores ))
+  port=$(( $port + 1 ))
+done
+wait #wait for all background clients to finish
+
+scp ${localhost}_to_${remotehost}.log root@$remotehost:/root/Desktop/iperf3_toolbox/1_to_n/
+#rm ${localhost}_to_${remotehost}.log

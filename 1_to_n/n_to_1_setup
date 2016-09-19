@@ -1,0 +1,40 @@
+#! /bin/bash
+# Script created by pmm
+
+# This script will set up iperf3 servers to handle traffic from the "1" remote host in a 1-to-n setup
+# Run these script on each of the "n" nodes
+
+#initialize variables
+c=3  #number of processes created per connection (default: 3)
+A=0  #used by the -A flag to set CPU affinity
+num_cores=24  #number of physical cores
+remotehost=""
+remotehost_id=0
+
+#parse arguments
+while getopts c:t:h: opt;do
+  case $opt in
+    c) c=$OPTARG
+       ;;
+    t) t=$OPTARG
+       ;;
+    h) remotehost=$OPTARG
+       remotehost_id=`echo $remotehost | grep -o -E [0-9]+`
+       ;;
+  esac
+done
+
+#handle argument errors
+if [[ $remotehost == "" ]];then
+  echo "Error: Did not specify remote hostname"
+  exit 1
+fi
+
+killall iperf3
+
+port=$(( 5201 + $(( $(( $remotehost_id -1 )) * $c )) )) #port these servers will listen on
+for i in `seq 1 $c`;do
+  iperf3 -s -d -A $A -p $port &
+  A=$(( (( $A + 1 )) % $num_cores ))
+  port=$(( $port + 1 ))
+done

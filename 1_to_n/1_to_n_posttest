@@ -1,0 +1,43 @@
+#! /bin/bash
+# Script created by pmm
+
+read -p "Enter a name for this test: " testname
+logdir=/root/Desktop/iperf3_toolbox/logs/$testname
+mkdir $logdir
+
+localhost=`hostname`
+
+echo "     Stream         Bandwidth" >> summary.log
+echo "----------------    ---------" >> summary.log
+for log in *.log;do
+  results=`cat $log | grep sender | tr -s " " | cut -d " " -f8`
+  total=0
+  for i in $results;do
+    total=`echo "$total + $i" | bc -l`
+  done
+  stream=`echo $log | cut -d "." -f1 | tr -t "_" " "`
+  if [[ $log != "summary.log" ]];then
+    echo "$stream  $total Gbit/s" >> summary.log
+  fi
+done
+
+cat ${localhost}_to_*.log > ${localhost}_to_n.log
+cat *_to_${localhost}.log > n_to_${localhost}.log
+
+echo ""
+results=`cat ${localhost}_to_n.log | grep sender | tr -s " " | cut -d " " -f8`
+total=0
+for i in $results;do
+  total=`echo "$total + $i" | bc -l`
+done
+echo "Total bandwidth (1-to-n): $total Gbit/s" >> summary.log
+
+results=`cat n_to_${localhost}.log | grep sender | tr -s " " | cut -d " " -f8`
+total=0
+for i in $results;do
+  total=`echo "$total + $i" | bc -l`
+done
+echo "Total bandwidth (n-to-1): $total Gbit/s" >> summary.log
+
+cat summary.log
+mv *.log $logdir

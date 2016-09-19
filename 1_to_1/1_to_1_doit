@@ -1,0 +1,46 @@
+#! /bin/bash
+# Script created by pmm
+
+# This script will establish an arbitrary number of connections to iperf3 servers running on a remote host
+# For this script to work properly, you first need to run the iperf3_setup script on the remote host you wish to connect to
+
+
+#initialize variables
+c=16  #number of processes created (default: 16)
+t=60  #length of test in sec (default: 60)
+A=0  #used by the -A flag to set CPU affinity
+num_cores=24  #number of physical cores
+port=5201  #base port number iperf3 clients will connect to
+remotehost=""  #remote host to connect to
+localhost=`hostname`  #local hostname
+
+#parse arguments
+while getopts h:c:t: opt;do
+  case $opt in
+    h) remotehost=$OPTARG
+       ;;
+    c) c=$OPTARG
+       ;;
+    t) t=$OPTARG
+       ;;
+  esac
+done
+
+if [[ $remotehost == "" ]];then
+  echo "Error: Did not specify remote hostname"
+  exit 1
+fi
+
+#create iperf3 clients
+for i in `seq 1 $c`
+do
+  iperf3 -c qsfp.$remotehost -R -A $A -Z -p $port -T $i -f g >> ${localhost}_to_${remotehost}.log &
+  A=$(( $(( $A + 1 )) % $num_cores ))
+  port=$(( $port + 1 ))
+done
+wait #wait for all background processes to finish
+
+
+#copy log file over to remotehost
+scp *.log root@$remotehost:/root/Desktop/iperf3_toolbox/1_to_1/
+exit

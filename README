@@ -1,0 +1,75 @@
+INITIALIZING THE TEST ENVIRONMENT
+Note: The following steps need to be performed only once per node
+
+  0) Copy the iperf3_toolbox folder to /root/Desktop
+
+  1) Copy the hosts file contained in this folder as follows:
+       cp ./hosts /etc/hosts
+
+  2) Install iperf3 if you have not already done so:
+       zypper install iperf
+     If zypper says that the package cannot be found, add the following repository via YAST:
+       http://download.opensuse.org/distribution/leap/42.1/repo/oss/
+
+  3) 
+===========================================================================================================================
+HOW TO PERFORM A ONE-TO-MANY BIDIRECTIONAL TEST
+  0) Go to the 1_to_n folder
+       cd ~/Desktop/iperf3_toolbox/1_to_n/
+
+  1) Decide which node will be the "lone" node, i.e. the node that will send to and receive from all other nodes in the setup
+     Since this node will have the highest processing load, choose the blade with the fastest hardware
+     The remaining nodes in the setup will be referred to as the "many" nodes
+
+  2) Run the 1_to_n_setup script on the "lone" node:
+        ./1_to_n_setup -n <N> -c <C>
+      Where:
+        <N> is the total number of nodes in the setup, including the "lone" node
+        <C> is the number of servers to create per "many"
+      This will create a total of C*(N-1) servers on the "lone" node, allowing it to handle C connections from each of the "many" nodes
+      Example: To setup the servers for a 1-to-7 setup on the "lone" node, with 3 servers for each of the 7 "many" nodes:
+        ./1_to_n_setup -n 8 -c 3
+
+  3) Run the n_to_1_setup script on each "many" node in the setup:
+        ./n_to_1_setup -h <remotehost> -c <C>
+      Where:
+        <remotehost> is the hostname of the "lone" node
+        <C> is the number of servers to create
+      This will create C servers on that node, allowing it to handle C connections from the "lone" node 
+      Example: If blade1 is the "lone" node, then to setup 3 servers to handle connections from blade 1 to the local host:
+        ./n_to_1_setup -h blade1 -c 3
+
+  4) Run the 1_to_n_doit script on the "lone" node:
+      ./1_to_n_doit -n <N> -c <C> -t <time>
+     Where:
+       <N> is the total number of nodes in the setup, including the "lone" node
+       <C> is the number of clinets to create per remote host
+       <time> is the duration of the connection, in seconds
+     This will create a total of C*(N-1) clients on the "lone" node, with C clients connecting to each of the "many" nodes
+     Example: To setup the clients for a 1-to-7 setup on the "lone" node, with 3 clients sending to each of the 7 "many" nodes for 120s:
+       ./1_to_n_doit -n 7 -c 3 -t 120
+
+  5) Run the n_to_1_doit script on each "many" node in the setup:
+      ./n_to_1_doit -h <remotehost> -c <C> -t <time>
+     Where:
+       <remotehost> is the hostname of the "lone" node
+       <C> is the number of clients to create
+       <time> is the duration of the connection, in seconds
+     This will create C clients on that node, with each client connecting to a server on the "lone" node
+     Example: If blade1 is the "lone" node, then to setup 3 clients to connect to blade1 from the local host:
+       ./n_to_1_doit -h blade1 -c 3 -t 120
+
+  6) When all tests complete, the log files from each "many" node will be copied to the "lone" node. Next run the 1_to_n_postest script:
+       ./1_to_n_postest
+     You will be prompted to enter a name for the test. This is the name of the folder where these log files will be saved.
+     This script will create a file called summary.log which gives an overview of the bandwidth achieved by each of the streams
+     When the script finished, all log files for that test will be located at:
+       /root/Desktop/iperf3_toolbox/logs/<testname>/
+     Where:
+       <testname> is the name provided to the script prompt
+
+  7) That's it!
+===========================================================================================================================
+To perform a one-to-one test:
+
+===========================================================================================================================
