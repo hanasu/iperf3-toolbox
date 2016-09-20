@@ -2,7 +2,7 @@
 # Script created by pmm
 
 read -p "Enter a name for this test: " testname
-logdir=/root/Desktop/iperf3_toolbox/logs/$testname
+logdir=/root/Desktop/iperf3-toolbox/logs/$testname
 mkdir $logdir
 
 localhost=`hostname`
