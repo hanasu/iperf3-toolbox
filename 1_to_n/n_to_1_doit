@@ -35,7 +35,7 @@ fi
 #create the iperf3 clients
 port=$(( 5201 + $(( (( $localhost_id - 1 )) * $c )) )) #port these clients will send to
 for i in `seq 1 $c`;do
-  iperf3 -c qsfp.$remotehost -A $A -Z -p $port -t $t -T $i -f g >> ${localhost}_to_${remotehost}.log &
+  iperf3 -c qsfp.$remotehost -A $A -Z -p $port -t $t -T $i -f g -O 2 >> ${localhost}_to_${remotehost}.log &
   A=$(( (( $A + 1 )) % $num_cores ))
   port=$(( $port + 1 ))
 done

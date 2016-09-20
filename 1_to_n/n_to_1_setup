@@ -34,7 +34,7 @@ killall iperf3
 
 port=$(( 5201 + $(( $(( $remotehost_id -1 )) * $c )) )) #port these servers will listen on
 for i in `seq 1 $c`;do
-  iperf3 -s -d -A $A -p $port &
+  iperf3 -s -d -A $A -p $port -O 2 &
   A=$(( (( $A + 1 )) % $num_cores ))
   port=$(( $port + 1 ))
 done
