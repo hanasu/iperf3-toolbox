@@ -38,7 +38,7 @@ port=5201 #port these servers will listen on
 for i in `seq 1 $n`;do
   if [[ $i != $localhost_id ]];then
     for j in `seq 1 $c`;do
-      iperf3 -s -d -A $A -p $port -O 2 &
+      iperf3 -s -d -A $A -p $port &
       A=$(( (( $A + 1 )) % $num_cores ))
       port=$(( $port + 1 ))
     done
