@@ -3,6 +3,11 @@
 
 read -p "Enter a name for this test: " testname
 logdir=/root/Desktop/iperf3-toolbox/logs/$testname
+
+if [ ! -d "/root/Desktop/iperf3-toolbox/logs/" ]; then
+  mkdir /root/Desktop/iperf3-toolbox/logs/
+fi
+
 mkdir $logdir
 
 localhost=`hostname`

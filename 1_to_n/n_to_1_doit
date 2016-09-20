@@ -41,5 +41,4 @@ for i in `seq 1 $c`;do
 done
 wait #wait for all background clients to finish
 
-scp ${localhost}_to_${remotehost}.log root@$remotehost:/root/Desktop/iperf3_toolbox/1_to_n/
-#rm ${localhost}_to_${remotehost}.log
+scp ${localhost}_to_${remotehost}.log root@$remotehost:/root/Desktop/iperf3-toolbox/1_to_n/
