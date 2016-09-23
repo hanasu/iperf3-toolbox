@@ -26,6 +26,9 @@ while getopts c:t:h: opt;do
   esac
 done
 
+#clean up leftover log files
+rm *.log
+
 #handle argument errors
 if [[ $remotehost == "" ]];then
   echo "Error: Did not specify remote hostname"
@@ -41,4 +44,5 @@ for i in `seq 1 $c`;do
 done
 wait #wait for all background clients to finish
 
+#transfer log file to "1" host node
 scp ${localhost}_to_${remotehost}.log root@$remotehost:/root/Desktop/iperf3-toolbox/1_to_n/
