@@ -6,7 +6,7 @@ ethtool -K $eth_device lro on
 ethtool -A $eth_device tx off rx off
 ethtool -G $eth_device tx 8192 rx 8192
 ifconfig $eth_device txqueuelen 20000
-ifconfig $eth_device mtu 68
+ifconfig $eth_device mtu 88
 
 service irqbalance stop
 /sbin/rcSuSEfirewall2 stop
