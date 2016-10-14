@@ -9,6 +9,7 @@ ifconfig $eth_device txqueuelen 20000
 ifconfig $eth_device mtu 108
 
 service irqbalance stop
+/sbin/rcSuSEfirewall2 stop
 
 ethtool -k $eth_device | grep large-receive-offload
 ethtool -a $eth_device
