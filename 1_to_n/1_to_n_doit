@@ -37,7 +37,7 @@ for i in `seq 1 $n`;do
   if [[ $i != $localhost_id ]];then
     remotehost=blade$i
     for j in `seq 0 $(( $c - 1 ))`;do
-      iperf3 -c qsfp.$remotehost -A $A -Z -p $(( $port + $j )) -t $t -T $i -f g -O 2 -M 24 >> ${localhost}_to_$remotehost.log &
+      iperf3 -c qsfp.$remotehost -A $A -Z -p $(( $port + $j )) -t $t -T $i -f g -O 2 -l 24 >> ${localhost}_to_$remotehost.log &
       A=$(( (( $A + 1 )) % $num_cores ))
     done
   fi
