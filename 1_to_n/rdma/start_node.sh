@@ -10,9 +10,9 @@ duration=20
 #parse command line arguments
 while getopts s:t: opt;do
   case $opt in
-    s) size=$optarg
+    s) size=$OPTARG
       ;;
-    t) duration=$optarg
+    t) duration=$OPTARG
       ;;
   esac
 done
