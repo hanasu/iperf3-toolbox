@@ -21,6 +21,7 @@ echo ""
 
 #set large-receive-offload on, turn off pause frames, increase ring NIC buffers
 ethtool -K $eth_device lro on
+ethtool -K $eth_device tx-nocache-copy off
 ethtool -A $eth_device tx off rx off
 ethtool -G $eth_device tx 8192 rx 8192
 
@@ -43,12 +44,16 @@ for i in `seq 0 $(( cores - 1 ))`; do
   echo performance > /sys/devices/system/cpu/cpu$i/cpufreq/scaling_governor;
 done
 
+#Mellanox tool that automatically handles affinity settings for NICs
+mlnx_affinity start
+
 echo ""
 echo "STATUS"
 echo "-----------------------"
 
 #check the current status of all the settings just changed to verify
 echo "Large Receive Offload:`ethtool -k $eth_device | grep large-receive-offload | cut -d ':' -f 2`"
+echo "TX No-cache Copy: `ethtool -k eth4 | grep tx-nocache | cut -d ' ' -f 2`"
 echo ""
 ethtool -a $eth_device
 ethtool -g $eth_device
