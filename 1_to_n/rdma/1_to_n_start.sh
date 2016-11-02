@@ -20,4 +20,8 @@ done
 #remove any residual processes from previous testing
 killall ib_write_bw
 
-ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -p $((18513 + $blade)) -b 100.0.0.1 > blade1_to_`hostname`.log
+#since the server is 100.0.0.1 and the nodes are addressed starting with
+#100.0.0.2 and ending with 100.0.0.16 the loop is bounded by these values
+for i in `seq 2 16`; do
+  ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -p $((18513 + $blade)) -b 100.0.0.$i > blade1_to_`hostname`.log;
+done
