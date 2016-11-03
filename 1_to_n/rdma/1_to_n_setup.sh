@@ -2,8 +2,6 @@
 
 #default port is 18515 so let's start there
 port=18515
-#clean up any residual processes
-killall ib_write_bw
 
 #there are 15 remote nodes that will be connecting to this 1 server node
 #taskset assigns them to separate cpu cores for best performance

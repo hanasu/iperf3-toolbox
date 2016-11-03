@@ -17,9 +17,6 @@ while getopts s:t: opt;do
   esac
 done
 
-#remove any residual processes from previous testing
-killall ib_write_bw
-
 for i in `seq 2 16`; do
   ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -p $((18528 + $i)) -b 100.0.0.$i > blade1_to_blade${i}.log &
 done
