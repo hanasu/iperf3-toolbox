@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #find out which blade number script is running on
-blade=`hostname | cut -c 6-7`
+#blade=`hostname | cut -c 6-7`
 #default transfer size of ib_write_bw if no argument passed
 size=8
 #how long the test will run in seconds if no argument passed
@@ -23,5 +23,5 @@ killall ib_write_bw
 #since the server is 100.0.0.1 and the nodes are addressed starting with
 #100.0.0.2 and ending with 100.0.0.16 the loop is bounded by these values
 for i in `seq 2 16`; do
-  ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -p $((18513 + $blade)) -b 100.0.0.$i > blade1_to_`hostname`.log;
+  ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -p $((18528 + $i)) -b 100.0.0.$i > blade1_to_`hostname`.log;
 done
