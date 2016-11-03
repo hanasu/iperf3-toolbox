@@ -10,6 +10,6 @@ killall ib_write_bw
 #each loop will increment the process' port by 1
 for i in `seq 0 14`;
 do
-  taskset -c $i ib_write_bw -d mlx5_0 -p $port & > blade$((i + 2))_to_blade1.log
+  taskset -c $i ib_write_bw -d mlx5_0 -p $port > blade$((i + 2))_to_blade1.log
   port=$(( $port + 1 ))
 done
