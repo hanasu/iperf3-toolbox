@@ -21,5 +21,5 @@ done
 killall ib_write_bw
 
 for i in `seq 2 16`; do
-  ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -p $((18528 + $i)) -b 100.0.0.$i &;
+  ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -p $((18528 + $i)) -b 100.0.0.$i > blade$i_to_blade1.log &;
 done
