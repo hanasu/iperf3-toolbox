@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#find out which blade number script is running on
-#blade=`hostname | cut -c 6-7`
 #default transfer size of ib_write_bw if no argument passed
 size=8
 #how long the test will run in seconds if no argument passed
