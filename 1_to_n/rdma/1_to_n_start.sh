@@ -16,5 +16,5 @@ while getopts s:t: opt;do
 done
 
 for i in `seq 2 16`; do
-  ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -qp=3 -p $((18528 + $i)) -b 100.0.0.$i > blade1_to_blade${i}.log &
+  ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -q 3 -p $((18528 + $i)) -b 100.0.0.$i > blade1_to_blade${i}.log &
 done
