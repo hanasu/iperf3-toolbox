@@ -17,4 +17,4 @@ while getopts s:t: opt;do
   esac
 done
 
-ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 2 -p $((18513 + $blade)) -b 100.0.0.1
+ib_write_bw -d mlx5_0 -i 1 -s $size --report_gbits -D $duration -F -I 0 -t 1028 -Q 1 -qp=3 -p $((18513 + $blade)) -b 100.0.0.1
